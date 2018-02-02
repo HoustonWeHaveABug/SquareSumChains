@@ -33,7 +33,7 @@ number_t *numbers;
 call_t *calls;
 
 int main(void) {
-	int squares_max, first_choices_sum, first_max, i;
+	int squares_max, first_choices_sum, i;
 	number_t **all_choices, **first_choices;
 	if (scanf("%d", &n) != 1 || n < 2) {
 		print_error("Invalid order");
@@ -77,11 +77,7 @@ int main(void) {
 		eval_number_first(numbers+i, all_choices+first_choices_sum);
 		first_choices_sum += numbers[i].first_choices_n;
 	}
-	first_max = n/2;
-	if (n%2 == 1) {
-		first_max++;
-	}
-	first_choices = malloc(sizeof(number_t *)*(size_t)first_max);
+	first_choices = malloc(sizeof(number_t *)*(size_t)n);
 	if (!first_choices) {
 		print_error("Could not allocate memory for first_choices");
 		free(all_choices);
@@ -89,10 +85,10 @@ int main(void) {
 		free(squares);
 		return EXIT_FAILURE;
 	}
-	for (i = 0; i < first_max; i++) {
+	for (i = 0; i < n; i++) {
 		first_choices[i] = numbers+i;
 	}
-	qsort(first_choices, (size_t)first_max, sizeof(number_t *), compare_numbers_first);
+	qsort(first_choices, (size_t)n, sizeof(number_t *), compare_numbers_first);
 	values = malloc(sizeof(int)*(size_t)n);
 	if (!values) {
 		print_error("Could not allocate memory for values");
@@ -115,7 +111,7 @@ int main(void) {
 	calls_max = n;
 	calls_n = 0;
 	found = 0;
-	for (i = first_max; i > 0 && add_call(1, first_choices[i-1]); i--);
+	for (i = n; i > 0 && add_call(1, first_choices[i-1]); i--);
 	while (calls_n > 0) {
 		calls_n--;
 		square_sum_chains(calls[calls_n].v, calls[calls_n].last);
